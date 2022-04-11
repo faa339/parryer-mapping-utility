@@ -144,7 +144,7 @@ MonoBehaviour:
   hitAudio: {fileID: 0}
   songBpm: 170
   secPerBeat: 0
-  firstBeatOffset: 0.19
+  firstBeatOffset: 0
   dspSongTime: 0
   musicSource: {fileID: 1304314645039198409}
   nextIndex: 0
@@ -171,4 +171,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   track1: 6400000066000000
   track2: 6a0000006b000000
-  notes: []

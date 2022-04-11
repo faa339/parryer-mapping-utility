@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using TMPro;
 public class InputManager : MonoBehaviour
 {
     public KeyCode[] track1;
@@ -9,9 +9,11 @@ public class InputManager : MonoBehaviour
     //public List<Vector2> notes; //y is beat, x is position
     string mapStr;
     int lastPos;
+    int escCount;
     // Update is called once per frame
     private void Start()
     {
+        escCount = 0;
         lastPos = 0;
     }
     void Update()
@@ -39,11 +41,19 @@ public class InputManager : MonoBehaviour
         }
 
         if (Input.GetKeyDown(KeyCode.Escape)) {
-            print("Exiting");
-            System.IO.File.WriteAllText("newMap.txt", mapStr);
-            
+            if (escCount == 0)
+            {
+                System.IO.File.WriteAllText("newMap.txt", mapStr);
+                var savedText = GameObject.Find("SavedText");
+                savedText.GetComponent<TextMeshProUGUI>().enabled = true;
+                savedText.GetComponent<TextMeshProUGUI>().text += "./newMap.txt\nPress escape again to exit\n";
+                escCount++;
+            }
+            else {
+                Application.Quit();
+            }
             //UnityEditor.EditorApplication.isPlaying = false;
-            Application.Quit();
+            //Application.Quit();
         }
     }
 }

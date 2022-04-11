@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Networking;
+using System.Threading.Tasks;
 using TMPro;
 
 public class Conductor : MonoBehaviour
@@ -176,11 +178,15 @@ public class Conductor : MonoBehaviour
         var bpmText = GameObject.Find("BPMInput").GetComponent<TMP_InputField>().text;
         songBpm = int.Parse(bpmText);
 
-        //assuming that we're getting a nice little path that wont crash everything QQ
-        var songPath = GameObject.Find("PInput").GetComponent<TMP_InputField>().text;
-        AudioClip songAudio = Resources.Load<AudioClip>(songPath);
+        
+        GameObject.Find("InputCanvas").GetComponent<Canvas>().enabled = false;
+        var offsetText = GameObject.Find("OffsetInput").GetComponent<TMP_InputField>().text;
+        firstBeatOffset = float.Parse(offsetText);
+        AudioClip songAudio = GameObject.Find("UserInputProcessor").GetComponent<InputProcess>().song;
         print(songAudio);
         musicSource.clip = songAudio;
-        GameObject.Find("InputCanvas").SetActive(false);
+
     }
+
+    
 }
