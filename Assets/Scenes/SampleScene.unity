@@ -709,8 +709,9 @@ GameObject:
   m_Component:
   - component: {fileID: 377900171}
   - component: {fileID: 377900170}
+  - component: {fileID: 377900172}
   m_Layer: 0
-  m_Name: UserInputProcessor
+  m_Name: UIProcessor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -729,9 +730,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   manager: {fileID: 1304314645039198420, guid: 2042d8de3fd37f84586b62b57bc38bc8, type: 3}
-  browserObj: {fileID: 0}
+  browserObj: {fileID: 1887825624663678, guid: 8c4ec9e65d4961640ad6dd301faacfb5, type: 3}
   browser: {fileID: 1887825624663678, guid: 8c4ec9e65d4961640ad6dd301faacfb5, type: 3}
-  importer: {fileID: 0}
   song: {fileID: 0}
 --- !u!4 &377900171
 Transform:
@@ -747,6 +747,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &377900172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 377900169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c85ca24aed0de7f4bb834c92b727d65b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &382841726
 GameObject:
   m_ObjectHideFlags: 0

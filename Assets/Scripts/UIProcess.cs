@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class InputProcess : MonoBehaviour
+public class UIProcess : MonoBehaviour
 {
     public GameObject manager;
     public GameObject browserObj;

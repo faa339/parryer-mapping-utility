@@ -50,6 +50,7 @@ public class Conductor : MonoBehaviour
         instance = this;
         //GameStateManager.Instance.OnGameStateChanged += OnGameStateChanged;
         //GameStateManager.Instance.SetState(GameState.Gameplay);
+        gameObject.name = "Manager"; //so that the input processor doesnt mess up lol
     }
 
     void OnDestroy()
@@ -182,7 +183,7 @@ public class Conductor : MonoBehaviour
         GameObject.Find("InputCanvas").GetComponent<Canvas>().enabled = false;
         var offsetText = GameObject.Find("OffsetInput").GetComponent<TMP_InputField>().text;
         firstBeatOffset = float.Parse(offsetText);
-        AudioClip songAudio = GameObject.Find("UserInputProcessor").GetComponent<InputProcess>().song;
+        AudioClip songAudio = GameObject.Find("UIProcessor").GetComponent<UIProcess>().song;
         print(songAudio);
         musicSource.clip = songAudio;
 

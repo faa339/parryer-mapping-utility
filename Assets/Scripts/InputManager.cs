@@ -43,9 +43,24 @@ public class InputManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape)) {
             if (escCount == 0)
             {
-                System.IO.File.WriteAllText("newMap.txt", mapStr);
                 var savedText = GameObject.Find("SavedText");
                 savedText.GetComponent<TextMeshProUGUI>().enabled = true;
+                GameObject c = GameObject.Find("Manager");
+                if (c == null) {
+                    savedText.GetComponent<TextMeshProUGUI>().text = "You pressed escape too early--" +
+                        "nothing was generated.\n";
+                    escCount++;
+                    return;
+                }
+                Conductor cond = c.GetComponent<Conductor>();
+                string preInput = "{" +cond.songBpm + " " 
+                    +cond.firstBeatOffset + " " 
+                    +cond.musicSource.clip.length + " " 
+                    +cond.musicSource.clip.name+" "
+                    + "}\n";
+                mapStr = preInput + mapStr;
+                System.IO.File.WriteAllText("newMap.txt", mapStr);
+                
                 savedText.GetComponent<TextMeshProUGUI>().text += "./newMap.txt\nPress escape again to exit\n";
                 escCount++;
             }
