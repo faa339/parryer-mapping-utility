@@ -15,6 +15,7 @@ public class InputManager : MonoBehaviour
     int escCount;
     float held1start;
     float held2start;
+    float holdCheck = 0.5f;
     // Update is called once per frame
     private void Start()
     {
@@ -35,14 +36,16 @@ public class InputManager : MonoBehaviour
                     held1start = Conductor.songPosInBeats;
                   
                 }
-                mapStr += "0 " + NoteType.SINGLE + " " + Conductor.songPosInBeats + "\n";
-                //notes.Add(new Vector2(0, Conductor.songPosInBeats));
+                //mapStr += "0 " + NoteType.SINGLE + " " + Conductor.songPosInBeats + "\n";
                 //add a kraft singles to the map list
             }
             else if (Input.GetKeyUp(track1[i])) {
-                if (Mathf.Abs(Conductor.songPosInBeats - held1start) > 0.2f) {
+                if (Mathf.Abs(Conductor.songPosInBeats - held1start) > holdCheck){
                     //threshhold for held notes
                     mapStr += "0 " + NoteType.HELD + " " + held1start + " " + Conductor.songPosInBeats + "\n";
+                }
+                else {
+                    mapStr += "0 " + NoteType.SINGLE + " " + held1start + "\n";
                 }
                 held1start = -1;
             }
@@ -54,12 +57,15 @@ public class InputManager : MonoBehaviour
                 if (held2start == -1) {
                     held2start = Conductor.songPosInBeats;
                 }
-                mapStr += "1 " + NoteType.SINGLE + " " + Conductor.songPosInBeats + "\n";
+                //mapStr += "1 " + NoteType.SINGLE + " " + Conductor.songPosInBeats + "\n";
             }
             else if (Input.GetKeyUp(track2[i])){
-                if (Mathf.Abs(Conductor.songPosInBeats - held2start) > 0.2f){
+                if (Mathf.Abs(Conductor.songPosInBeats - held2start) > holdCheck){
                     //threshhold for held notes
-                    mapStr += "0 " + NoteType.HELD + " " + held2start+ " " + Conductor.songPosInBeats + "\n";
+                    mapStr += "1 " + NoteType.HELD + " " + held2start + " " + Conductor.songPosInBeats + "\n";
+                }
+                else {
+                    mapStr += "1 " + NoteType.SINGLE + " " + held2start + "\n";
                 }
                 held2start = -1;
             }
@@ -90,6 +96,7 @@ public class InputManager : MonoBehaviour
                     +cond.musicSource.clip.length + " " 
                     +cond.musicSource.clip.name+" "
                     + "}\n";
+                //mapStr = CleanMap(mapStr);
                 mapStr = preInput + mapStr;
                 Regex r = new Regex("[\\s\"\'*<>\\|\\/:?]|($|\\s\\.)"); //attempt to replace illegal characters lol
                 string sanitizedSongName = r.Replace(cond.musicSource.clip.name, "_");
@@ -108,9 +115,12 @@ public class InputManager : MonoBehaviour
         }
     }
 
+    /* deprecated idea of cleaning the map for double presses
+     * before current scheme was reached
     string CleanMap(string map) {
         //TODO: clean the map!
-        return "";
-    }
+        string cleanmap = map;
+        return cleanmap;
+    }*/
 
 }
