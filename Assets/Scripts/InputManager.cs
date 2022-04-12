@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 public class InputManager : MonoBehaviour
 {
@@ -48,7 +50,7 @@ public class InputManager : MonoBehaviour
                 GameObject c = GameObject.Find("Manager");
                 if (c == null) {
                     savedText.GetComponent<TextMeshProUGUI>().text = "You pressed escape too early--" +
-                        "nothing was generated.\n";
+                        "nothing was generated. Press esc again to restart process\n";
                     escCount++;
                     return;
                 }
@@ -59,13 +61,17 @@ public class InputManager : MonoBehaviour
                     +cond.musicSource.clip.name+" "
                     + "}\n";
                 mapStr = preInput + mapStr;
-                System.IO.File.WriteAllText("newMap.txt", mapStr);
-                
-                savedText.GetComponent<TextMeshProUGUI>().text += "./newMap.txt\nPress escape again to exit\n";
+                Regex r = new Regex("[\\s\"\'*<>\\|\\/:?]|($|\\s\\.)"); //attempt to replace illegal characters lol
+                string sanitizedSongName = r.Replace(cond.musicSource.clip.name, "_");
+                //sanitizedSongName = sanitizedSongName.Replace(" ", "_");
+                sanitizedSongName += "_map.txt";
+                System.IO.File.WriteAllText(sanitizedSongName, mapStr);
+                savedText.GetComponent<TextMeshProUGUI>().text += sanitizedSongName+"\nPress escape again to reset\n";
+                cond.musicSource.Stop();
                 escCount++;
             }
             else {
-                Application.Quit();
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
             //UnityEditor.EditorApplication.isPlaying = false;
             //Application.Quit();
