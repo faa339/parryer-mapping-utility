@@ -8,30 +8,60 @@ public class InputManager : MonoBehaviour
 {
     public KeyCode[] track1;
     public KeyCode[] track2;
+    enum NoteType{SINGLE, HELD, DRUMROLL}; //doing a bit 
     //public List<Vector2> notes; //y is beat, x is position
     string mapStr;
     int lastPos;
     int escCount;
+    float held1start;
+    float held2start;
     // Update is called once per frame
     private void Start()
     {
         escCount = 0;
         lastPos = 0;
+        held1start = -1;
+        held2start = -1;
     }
     void Update()
     {   
+        //initializing these for held notes
         // Get current gamestate (in-game or paused)
         //GameState currentGameState = GameStateManager.Instance.CurrentGameState;
         for(int i=0; i<track1.Length; i++){
-            if(Input.GetKeyDown(track1[i])){
+            if (Input.GetKeyDown(track1[i]))
+            {
+                if (held1start == -1) {
+                    held1start = Conductor.songPosInBeats;
+                  
+                }
+                mapStr += "0 " + NoteType.SINGLE + " " + Conductor.songPosInBeats + "\n";
                 //notes.Add(new Vector2(0, Conductor.songPosInBeats));
-                mapStr += "0 " + Conductor.songPosInBeats + "\n";
+                //add a kraft singles to the map list
+            }
+            else if (Input.GetKeyUp(track1[i])) {
+                if (Mathf.Abs(Conductor.songPosInBeats - held1start) > 0.2f) {
+                    //threshhold for held notes
+                    mapStr += "0 " + NoteType.HELD + " " + held1start + " " + Conductor.songPosInBeats + "\n";
+                }
+                held1start = -1;
             }
         }
 
         for(int i=0; i<track2.Length; i++){
             if(Input.GetKeyDown(track2[i])){
-                mapStr += "1 " + Conductor.songPosInBeats + "\n";
+                //same as above
+                if (held2start == -1) {
+                    held2start = Conductor.songPosInBeats;
+                }
+                mapStr += "1 " + NoteType.SINGLE + " " + Conductor.songPosInBeats + "\n";
+            }
+            else if (Input.GetKeyUp(track2[i])){
+                if (Mathf.Abs(Conductor.songPosInBeats - held2start) > 0.2f){
+                    //threshhold for held notes
+                    mapStr += "0 " + NoteType.HELD + " " + held2start+ " " + Conductor.songPosInBeats + "\n";
+                }
+                held2start = -1;
             }
         }
         int pos = (int)Conductor.songPos;
@@ -77,4 +107,10 @@ public class InputManager : MonoBehaviour
             //Application.Quit();
         }
     }
+
+    string CleanMap(string map) {
+        //TODO: clean the map!
+        return "";
+    }
+
 }
