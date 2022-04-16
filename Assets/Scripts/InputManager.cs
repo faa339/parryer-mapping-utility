@@ -36,60 +36,62 @@ public class InputManager : MonoBehaviour
             mapLst.Add("/*" + Conductor.songPos + " current pos*/\n");
         }
 
-    
-        for (int i=0; i<track1.Length; i++){
-            if (Input.GetKeyDown(track1[i]))
+        //track1 input check
+        if (Input.GetKeyDown(track1[0]) || Input.GetKeyDown(track1[1]))
+        {
+            if (held1start == -1)
             {
-                if (held1start == -1)
-                {
-                    held1start = Conductor.songPosInBeats;
+                held1start = Conductor.songPosInBeats;
 
-                }
-            }
-            else if (Input.GetKeyUp(track1[i]))
-            {
-                if (Mathf.Abs(Conductor.songPosInBeats - held1start) > holdCheck)
-                {
-                    //threshhold for held notes
-                    mapLst.Add("0 " + NoteType.HELD + " " + held1start + " " + Conductor.songPosInBeats + "\n");
-                }
-                else
-                { //add a kraft singles to the map list
-                    mapLst.Add("0 " + NoteType.SINGLE + " " + held1start + "\n");
-                }
-                held1start = -1;
-            }
-            else if (Input.GetKeyDown(KeyCode.G)) {
-                // add a quick hazard 
-                mapLst.Add("0 " + NoteType.HAZARD + " " + Conductor.songPosInBeats + "\n");
             }
         }
-
-        for(int i=0; i<track2.Length; i++){
-            if(Input.GetKeyDown(track2[i])){
-                //same as above
-                if (held2start == -1) {
-                    held2start = Conductor.songPosInBeats;
-                }
-                //mapStr += "1 " + NoteType.SINGLE + " " + Conductor.songPosInBeats + "\n";
+        else if (Input.GetKeyUp(track1[0]) || Input.GetKeyUp(track1[1])) {
+            if (Mathf.Abs(Conductor.songPosInBeats - held1start) > holdCheck)
+            {
+                //threshhold for held notes
+                mapLst.Add("0 " + NoteType.HELD + " " + held1start + " " + Conductor.songPosInBeats + "\n");
             }
-            else if (Input.GetKeyUp(track2[i])){
-                if (Mathf.Abs(Conductor.songPosInBeats - held2start) > holdCheck){
-                    //threshhold for held notes
-                    mapLst.Add( "1 " + NoteType.HELD + " " + held2start + " " + Conductor.songPosInBeats + "\n");
-                }
-                else {
-                    mapLst.Add("1 " + NoteType.SINGLE + " " + held2start + "\n");
-                }
-                held2start = -1;
+            else
+            { //add a kraft singles to the map list
+                mapLst.Add("0 " + NoteType.SINGLE + " " + held1start + "\n");
             }
-            else if (Input.GetKeyDown(KeyCode.H)){
-                mapLst.Add( "1 " + NoteType.HAZARD + " " + Conductor.songPosInBeats + "\n");
-            }
+            held1start = -1;
+        }
+        else if (Input.GetKeyDown(KeyCode.G))
+        {
+            // add a quick hazard 
+            mapLst.Add("0 " + NoteType.HAZARD + " " + Conductor.songPosInBeats + "\n");
         }
 
+
+        //track2 input check
+        if (Input.GetKeyDown(track2[0]) || Input.GetKeyDown(track2[1]))
+        {
+            if (held2start == -1)
+            {
+                held2start = Conductor.songPosInBeats;
+
+            }
+        }
+        else if (Input.GetKeyUp(track2[0]) || Input.GetKeyUp(track2[1]))
+        {
+            if (Mathf.Abs(Conductor.songPosInBeats - held2start) > holdCheck)
+            {
+                //threshhold for held notes
+                mapLst.Add("1 " + NoteType.HELD + " " + held2start + " " + Conductor.songPosInBeats + "\n");
+            }
+            else
+            {
+                mapLst.Add("1 " + NoteType.SINGLE + " " + held2start + "\n");
+            }
+            held2start = -1;
+        }
+        else if (Input.GetKeyDown(KeyCode.H)) {
+            mapLst.Add("1 " + NoteType.HAZARD + " " + Conductor.songPosInBeats + "\n");
+
+        }
         
-
+        //misc keys (esc, anything else we need idk) 
         if (Input.GetKeyDown(KeyCode.Escape)) {
             if (escCount == 0)
             {
@@ -106,7 +108,7 @@ public class InputManager : MonoBehaviour
                 string preInput = "{" +cond.songBpm + " " 
                     +cond.firstBeatOffset + " " 
                     +cond.musicSource.clip.length + " " 
-                    +cond.musicSource.clip.name+" "
+                    +"\""+cond.musicSource.clip.name+"\""+" "
                     + "}\n";
                 string mapStr = preInput + string.Join("", mapLst);
                 Regex r = new Regex("[\\s\"\'*<>\\|\\/:?]|($|\\s\\.)"); //attempt to replace illegal characters lol
