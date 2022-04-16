@@ -8,9 +8,9 @@ public class InputManager : MonoBehaviour
 {
     public KeyCode[] track1;
     public KeyCode[] track2;
-    enum NoteType{SINGLE, HELD, DRUMROLL}; //doing a bit 
+    enum NoteType{SINGLE, HELD, DRUMROLL, HAZARD}; //doing a bit 
     //public List<Vector2> notes; //y is beat, x is position
-    string mapStr;
+    List<string> mapLst;
     int lastPos;
     int escCount;
     float held1start;
@@ -23,31 +23,45 @@ public class InputManager : MonoBehaviour
         lastPos = 0;
         held1start = -1;
         held2start = -1;
+        mapLst = new List<string>();
     }
     void Update()
-    {   
-        //initializing these for held notes
-        // Get current gamestate (in-game or paused)
-        //GameState currentGameState = GameStateManager.Instance.CurrentGameState;
-        for(int i=0; i<track1.Length; i++){
+    {
+        // log the time for mapping analysis use
+        int pos = (int)Conductor.songPos;
+        if (pos != lastPos && pos % 10 == 0)
+        {
+            print("Here " + pos + " " + lastPos);
+            lastPos = pos;
+            mapLst.Add("/*" + Conductor.songPos + " current pos*/\n");
+        }
+
+    
+        for (int i=0; i<track1.Length; i++){
             if (Input.GetKeyDown(track1[i]))
             {
-                if (held1start == -1) {
+                if (held1start == -1)
+                {
                     held1start = Conductor.songPosInBeats;
-                  
+
                 }
-                //mapStr += "0 " + NoteType.SINGLE + " " + Conductor.songPosInBeats + "\n";
-                //add a kraft singles to the map list
             }
-            else if (Input.GetKeyUp(track1[i])) {
-                if (Mathf.Abs(Conductor.songPosInBeats - held1start) > holdCheck){
+            else if (Input.GetKeyUp(track1[i]))
+            {
+                if (Mathf.Abs(Conductor.songPosInBeats - held1start) > holdCheck)
+                {
                     //threshhold for held notes
-                    mapStr += "0 " + NoteType.HELD + " " + held1start + " " + Conductor.songPosInBeats + "\n";
+                    mapLst.Add("0 " + NoteType.HELD + " " + held1start + " " + Conductor.songPosInBeats + "\n");
                 }
-                else {
-                    mapStr += "0 " + NoteType.SINGLE + " " + held1start + "\n";
+                else
+                { //add a kraft singles to the map list
+                    mapLst.Add("0 " + NoteType.SINGLE + " " + held1start + "\n");
                 }
                 held1start = -1;
+            }
+            else if (Input.GetKeyDown(KeyCode.G)) {
+                // add a quick hazard 
+                mapLst.Add("0 " + NoteType.HAZARD + " " + Conductor.songPosInBeats + "\n");
             }
         }
 
@@ -62,21 +76,19 @@ public class InputManager : MonoBehaviour
             else if (Input.GetKeyUp(track2[i])){
                 if (Mathf.Abs(Conductor.songPosInBeats - held2start) > holdCheck){
                     //threshhold for held notes
-                    mapStr += "1 " + NoteType.HELD + " " + held2start + " " + Conductor.songPosInBeats + "\n";
+                    mapLst.Add( "1 " + NoteType.HELD + " " + held2start + " " + Conductor.songPosInBeats + "\n");
                 }
                 else {
-                    mapStr += "1 " + NoteType.SINGLE + " " + held2start + "\n";
+                    mapLst.Add("1 " + NoteType.SINGLE + " " + held2start + "\n");
                 }
                 held2start = -1;
             }
+            else if (Input.GetKeyDown(KeyCode.H)){
+                mapLst.Add( "1 " + NoteType.HAZARD + " " + Conductor.songPosInBeats + "\n");
+            }
         }
-        int pos = (int)Conductor.songPos;
 
-        if (pos != lastPos && pos%10==0) {
-            print("Here " + pos +" "+ lastPos);
-            lastPos = pos;
-            mapStr += "/*" + Conductor.songPos + " current pos*/\n";
-        }
+        
 
         if (Input.GetKeyDown(KeyCode.Escape)) {
             if (escCount == 0)
@@ -96,8 +108,7 @@ public class InputManager : MonoBehaviour
                     +cond.musicSource.clip.length + " " 
                     +cond.musicSource.clip.name+" "
                     + "}\n";
-                //mapStr = CleanMap(mapStr);
-                mapStr = preInput + mapStr;
+                string mapStr = preInput + string.Join("", mapLst);
                 Regex r = new Regex("[\\s\"\'*<>\\|\\/:?]|($|\\s\\.)"); //attempt to replace illegal characters lol
                 string sanitizedSongName = r.Replace(cond.musicSource.clip.name, "_");
                 //sanitizedSongName = sanitizedSongName.Replace(" ", "_");
@@ -110,8 +121,6 @@ public class InputManager : MonoBehaviour
             else {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
-            //UnityEditor.EditorApplication.isPlaying = false;
-            //Application.Quit();
         }
     }
 
