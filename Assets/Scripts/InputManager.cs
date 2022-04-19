@@ -36,16 +36,66 @@ public class InputManager : MonoBehaviour
             mapLst.Add("/*" + Conductor.songPos + " current pos*/\n");
         }
 
-        //track1 input check
+        //track1 press down check
         if (Input.GetKeyDown(track1[0]) || Input.GetKeyDown(track1[1]))
         {
-            if (held1start == -1)
+            if (Input.GetKey(KeyCode.Space))
             {
-                held1start = Conductor.songPosInBeats;
+                mapLst.Add("0 " + NoteType.HAZARD + " " + Conductor.songPosInBeats + "\n");
+            }
+            else
+            {
+                if (held1start == -1)
+                {
+                    held1start = Conductor.songPosInBeats;
 
+                }
+            }
+        }//track2 press down check
+        else if (Input.GetKeyDown(track2[0]) || Input.GetKeyDown(track2[1]))
+        {
+            if (Input.GetKey(KeyCode.Space))
+            {
+                mapLst.Add("1 " + NoteType.HAZARD + " " + Conductor.songPosInBeats + "\n");
+            }
+            else
+            {
+                if (held2start == -1)
+                {
+                    held2start = Conductor.songPosInBeats;
+                }
+            }
+        }//track1 release check
+        else if (Input.GetKeyUp(track1[0]) || Input.GetKeyUp(track1[1])) {
+            if (held1start != -1) {
+                if (Mathf.Abs(Conductor.songPosInBeats - held1start) > holdCheck)
+                {
+                    mapLst.Add("0 " + NoteType.HELD + " " + held1start + " " + Conductor.songPosInBeats + "\n");
+                }
+                else
+                {
+                    mapLst.Add("0 " + NoteType.SINGLE + " " + held1start + "\n");
+                }
+                held1start = -1;
+            }
+        }//track1 release check
+        else if (Input.GetKeyUp(track2[0]) || Input.GetKeyUp(track2[1]))
+        {
+            if (held2start != -1)
+            {
+                if (Mathf.Abs(Conductor.songPosInBeats - held2start) > holdCheck)
+                {
+                    mapLst.Add("1 " + NoteType.HELD + " " + held2start + " " + Conductor.songPosInBeats + "\n");
+                }
+                else
+                {
+                    mapLst.Add("1 " + NoteType.SINGLE + " " + held2start + "\n");
+                }
+                held2start = -1;
             }
         }
-        else if (Input.GetKeyUp(track1[0]) || Input.GetKeyUp(track1[1])) {
+
+        /*else if (Input.GetKeyUp(track1[0]) || Input.GetKeyUp(track1[1])) {
             if (Mathf.Abs(Conductor.songPosInBeats - held1start) > holdCheck)
             {
                 //threshhold for held notes
@@ -89,8 +139,8 @@ public class InputManager : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.H)) {
             mapLst.Add("1 " + NoteType.HAZARD + " " + Conductor.songPosInBeats + "\n");
 
-        }
-        
+        }*/
+
         //misc keys (esc, anything else we need idk) 
         if (Input.GetKeyDown(KeyCode.Escape)) {
             if (escCount == 0)

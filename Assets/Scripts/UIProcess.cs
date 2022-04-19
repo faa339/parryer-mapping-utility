@@ -8,7 +8,7 @@ public class UIProcess : MonoBehaviour
     public GameObject manager;
     public GameObject browserObj;
     GameObject inputselect;
-    public Browser browser;
+    Browser browser;
     AudioImporter importer;
     public AudioClip song;
     public void Start(){
